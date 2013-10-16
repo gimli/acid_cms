@@ -11,7 +11,7 @@
 
 db_host: localhost
 db_user: root
-db_pass: bjo10ern21
+db_pass: 
 db_name: acid_evo_cms
 
 #####################################################################
