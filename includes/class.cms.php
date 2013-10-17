@@ -71,7 +71,7 @@ class Users extends Core {
             if($d->row_count() < 0){
                  die(IP_BANNED);
             }
-      }
+        }
       }
 
       public function lockIp(){
@@ -87,7 +87,7 @@ class Users extends Core {
 
            case $s['HTTP_CLIENT_IP']:
              $x = $s['HTTP_CLIENT_IP'];
-           break
+           break;
          }
          return $x;
       } 
