@@ -58,6 +58,22 @@ class Users extends Core {
         }     
       }
 
+      public function UserInfo(){
+        $d = $this->core->Sql->prepare("SELECT * FROM `account` WHERE `id` = '".$_SESSION['member_id']."'");
+        $d->execute;
+        $r = $d->fetch();
+        $r = $this->generateObject($r);
+        return $r;
+      }
+
+      public function fetchUserInfo($i){
+        $d = $this->core->Sql->prepare("SELECT * FROM `account` WHERE `id` = '$i'");
+        $d->execute;
+        $r = $d->fetch();
+        $r = $this->generateObject($r);
+        return $r;
+      }
+
       public function isLogged(){
           if(isset($_SESSION['member_id'])){
              return true;
