@@ -11,5 +11,12 @@ $p = $Core->Sql->prepare("SELECT * FROM `account` WHERE `email` = 'admin@isengar
 $p->execute();
 $r = $p->fetch();
 
-echo $r['email'];
+echo $r['email']."<br/>";
+
+echo "Your ip: ".$Core->Users->lockIp();
+if($Core->Users->confirm_login()){
+  echo "<br/>hi ".$r['nick'];
+}else{
+  echo "<br/>hi Guest";
+}
 ?>

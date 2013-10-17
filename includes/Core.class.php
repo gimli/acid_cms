@@ -45,7 +45,46 @@ class Core {
               }
             }
          }
-         closedir($loadDir);       
+         closedir($loadDir);  
+
+         //initialize the post variable
+         if($_SERVER['REQUEST_METHOD'] == 'POST') {
+             $this->post = $_POST;
+             if(get_magic_quotes_gpc ()) {
+                 //get rid of magic quotes and slashes if present
+                 array_walk_recursive($this->post, array($this, 'stripslash_gpc'));
+             }
+         }
+
+         //initialize the get variable
+         $this->get = $_GET;
+
+         //decode the url
+         array_walk_recursive($this->get, array($this, 'urldecode'));     
+     }
+
+	/**
+	 * Redirects a user to another page
+	 * @param string $url - The new URL to go to
+	 * @return void
+	 */
+     function redirect($url) {
+		switch ($this->Config['redirect_type']) {
+			default:
+			header('Location: ' . $url);
+			exit;
+			break;
+			case 2:
+			echo <<<META
+<html><head><meta http-equiv="Refresh" content="0;URL={$url}" /></head><body></body></html>
+META;
+			break;
+			case 3:
+			echo <<<SCRIPT
+<html><body><script>location="{$url}";</script></body></html>
+SCRIPT;
+			break;
+		}
      }
 
      public function GetConfig($i){
