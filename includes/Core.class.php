@@ -7,6 +7,10 @@ if(!defined('IN_SCRIPT')){
 class Core {
      
      public function __construct(){
+
+         require_once("class.session.php");
+         $this->Session = SessionManager::sessionStart('username');
+
          require_once("./includes/spyc.php");
          $this->Config = Spyc::YAMLLoad('./includes/settings.yaml');
 
@@ -24,9 +28,6 @@ class Core {
 
          require_once("class.messages.php");
          $this->Message = new messageSystem($this);
-
-         require_once("class.session.php");
-         $this->Session = SessionManager::sessionStart('username');
 
          require_once("class.cms.php");
          $this->Users = new Users($this);

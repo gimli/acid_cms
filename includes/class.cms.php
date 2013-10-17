@@ -32,8 +32,30 @@ class Users extends Core {
         $this->banCheck('ip',$ip);
 
         if(isset($res->id)){
-           // login success
+           unset($p);
+
+           $s = $_SESSION;
+           $s['allowed'] = true;
+           $s['member_id'] = $res->id;
+
+           $d = $this->core->Sql->prepare("UPDATE `account` SET `status` = 1 WHERE `id` = '".$res->id."'");
+           $d->execute();
+
+           if($r){
+             setcookie('allowed', true, time() + 1*24*60*60);
+             setcookie('member_id', $res->id, time() + 1*24*60*60);
+           }else{
+             setcookie('allowed', true, time() + 1*24*60*60);
+             setcookie('member_id', $res->id, time() + 1*24*60*60); 
+           }
+           $this->core->redirect("index.php?login=success");
         }     
+      }
+
+      public function isLogged(){
+        if(isset($_SESSION['member_id'])){
+          return true;
+        }
       }
 
       public function banCheck($type,$i){
@@ -44,7 +66,7 @@ class Users extends Core {
                  die(ACCOUNT_BANNED);
             }
         }else{
-            $d = $this->core->Sql->prepare("SELECT * FROM `ip_banned` WHERE `ip` = '$i'");
+            $d = $this->core->Sql->prepare("SELECT * FROM `ip_banned` WHERE `ip` = '$i'"); // this can also lock ip's from viewing any content simply add: $Core->Users->banCheck('ip',$Core->Users->lockIp()); it will redirect banned ip's to our frontpage.
             $d->execute();
             if($d->row_count() < 0){
                  die(IP_BANNED);
