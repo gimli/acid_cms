@@ -7,6 +7,7 @@ if(!defined('IN_SCRIPT')){
 class Users extends Core {
 
       var $core;
+      public $member_id;
 
       function Users(&$core){
         $this->core = &$core;
@@ -58,6 +59,26 @@ class Users extends Core {
         }     
       }
 
+      public function userRegister($e,$u,$p){
+
+           $this->banCheck('ip',$this->lockIp());
+
+           $d = $this->core->Sql->prepare("SELECT * FROM `account` WHERE `email` = '$e'");
+           $d->execute();
+           if($d->rowCount() < 0){
+              die(USER_ALREADY_EXSIST);
+           }
+
+           $hash = $this->generateRandomString(10);
+           $hash = $this->generatePasswordHash($p,$hash);
+
+           $d = $this->core->Sql->prepare("INSERT INTO `account` (`username`,`email`,`md5_encrypted_password`) VALUES ()");
+           $d->execute();
+
+           
+
+      }
+
       public function UserInfo(){
         $d = $this->core->Sql->prepare("SELECT * FROM `account` WHERE `id` = '".$_SESSION['member_id']."'");
         $d->execute;
@@ -78,7 +99,7 @@ class Users extends Core {
           if(isset($_SESSION['member_id'])){
              return true;
           }
-       }
+      }
 
       public function banCheck($type,$i){
         if($type == "account"){
