@@ -72,15 +72,30 @@ class Users extends Core {
            $hash = $this->generateRandomString(10);
            $hash = $this->generatePasswordHash($p,$hash);
 
-           $d = $this->core->Sql->prepare("INSERT INTO `account` (`username`,`email`,`md5_encrypted_password`) VALUES ()");
+           $d = $this->core->Sql->prepare("INSERT INTO `account` (`username`,`email`,`md5_encrypted_password`) VALUES ('$u','$e','$hash')");
            $d->execute();
-
-           
-
+           if($d->rowCount < 0){
+              // lets check values in the database
+              $d = $this->core->Sql->prepare("SELECT * FROM `account` WHERE `email` = '$e' AND `md5_encrypted_password` = '$hash'");
+              $d->execute();
+              $r = $d->fetch()
+              $r = $this->generateObject($r);
+              if($r->email){
+                 if($this->core->Config['use_email_activation']){
+                    $this->core->Mail->register();
+                  }else{
+                    // lets make sure users can login right away
+                    $d = $this->core->Sql->prepare("UPDATE `account` SET `active` = 1 WHERE `email` = '$e'");
+                    $d->execute();
+                    $this->core->redirect("login.php");
+                  }
+              }else{
+                 die(ERROR_UNABLE_TO_CREATE_USER);
+              }
+           }
       }
 
-      /* @return account table info $Core->Users->userInfo()->$value */
-
+      // return false if query empty or return auto-generated objects from db
       public function UserInfo(){
         $d = $this->core->Sql->prepare("SELECT * FROM `account` WHERE `id` = '".$_SESSION['member_id']."'");
         $d->execute;
@@ -88,6 +103,8 @@ class Users extends Core {
            $r = $d->fetch();
            $r = $this->generateObject($r);
            return $r;
+        }else{
+            return false;
         }
       }
 
