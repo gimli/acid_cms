@@ -79,12 +79,16 @@ class Users extends Core {
 
       }
 
+      /* @return account table info $Core->Users->userInfo()->$value */
+
       public function UserInfo(){
         $d = $this->core->Sql->prepare("SELECT * FROM `account` WHERE `id` = '".$_SESSION['member_id']."'");
         $d->execute;
-        $r = $d->fetch();
-        $r = $this->generateObject($r);
-        return $r;
+        if($d->rowCount()>0){
+           $r = $d->fetch();
+           $r = $this->generateObject($r);
+           return $r;
+        }
       }
 
       public function fetchUserInfo($i){

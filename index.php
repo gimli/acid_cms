@@ -14,7 +14,7 @@ $r = $p->fetch();
 echo $r['email']."<br/>";
 
 echo "Your ip: ".$Core->Users->lockIp();
-if($Core->Users->confirm_login()){
+if($Core->Users->isLogged()){
   echo "<br/>hi ".$r['nick'];
 }else{
   echo "<br/>hi Guest";
