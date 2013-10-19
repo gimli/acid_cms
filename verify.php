@@ -1,7 +1,7 @@
 <?php
 include("./includes/header_simple.php");
 require_once('./includes/recaptchalib.php');
-$privatekey = $engine->Config->GetConfig('PrivateKey');
+$privatekey = $Core->Config->GetConfig('PrivateKey');
 
 $resp = recaptcha_check_answer ($privatekey,
                                 $_SERVER["REMOTE_ADDR"],
@@ -18,8 +18,8 @@ if (!$resp->is_valid) {
    $p = $_POST['password'];
    $i = '0.0.0.0'; 
 
-   $engine->Mail->register($e);
+   $Core->Mail->register($e);
 
-   $engine->Users->register($u,$e,$p,$i);
+   $Core->Users->register($u,$e,$p,$i);
 }
 ?>
